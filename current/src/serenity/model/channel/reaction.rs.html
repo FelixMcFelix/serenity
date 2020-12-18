@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/model/channel/reaction.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>reaction.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../../serenity/index.html'><div class='logo-container rust-logo'><img src='../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+<link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../../serenity/index.html'><div class='logo-container rust-logo'><img src='../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
                 <a id="settings-menu" href="../../../../settings.html"><img src="../../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -618,6 +618,7 @@
         <span class="prelude-ty">Result</span> <span class="kw">as</span> <span class="ident">FmtResult</span>,
         <span class="ident">Write</span> <span class="kw">as</span> <span class="ident">FmtWrite</span>
     },
+    <span class="ident">cmp</span>::<span class="ident">Ordering</span>
 };
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internal</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
@@ -631,31 +632,20 @@
 
 <span class="doccomment">/// An emoji reaction to a message.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
+<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Reaction</span> {
     <span class="doccomment">/// The [`Channel`] of the associated [`Message`].</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Channel`]: enum.Channel.html</span>
-    <span class="doccomment">/// [`Message`]: struct.Message.html</span>
     <span class="kw">pub</span> <span class="ident">channel_id</span>: <span class="ident">ChannelId</span>,
     <span class="doccomment">/// The reactive emoji used.</span>
     <span class="kw">pub</span> <span class="ident">emoji</span>: <span class="ident">ReactionType</span>,
     <span class="doccomment">/// The Id of the [`Message`] that was reacted to.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Message`]: struct.Message.html</span>
     <span class="kw">pub</span> <span class="ident">message_id</span>: <span class="ident">MessageId</span>,
     <span class="doccomment">/// The Id of the [`User`] that sent the reaction.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Set to `None` by [`Message::react`] when cache is not available.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`User`]: ../user/struct.User.html</span>
-    <span class="doccomment">/// [`Message::react`]: struct.Message.html#method.react</span>
     <span class="kw">pub</span> <span class="ident">user_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">UserId</span><span class="op">&gt;</span>,
     <span class="doccomment">/// The optional Id of the [`Guild`] where the reaction was sent.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Guild`]: ../guild/struct.Guild.html</span>
     <span class="kw">pub</span> <span class="ident">guild_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">GuildId</span><span class="op">&gt;</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">_nonexhaustive</span>: (),
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>)]</span>
@@ -668,7 +658,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Requires the [Read Message History] permission.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [Read Message History]: ../permissions/struct.Permissions.html#associatedconstant.READ_MESSAGE_HISTORY</span>
+    <span class="doccomment">/// [Read Message History]: Permissions::READ_MESSAGE_HISTORY</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">channel</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cache_http</span>: <span class="kw">impl</span> <span class="ident">CacheHttp</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Channel</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">channel_id</span>.<span class="ident">to_channel</span>(<span class="ident">cache_http</span>).<span class="ident">await</span>
@@ -686,9 +676,8 @@
     <span class="doccomment">/// [`ModelError::InvalidPermissions`] if the current user does not have</span>
     <span class="doccomment">/// the required [permissions].</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [`ModelError::InvalidPermissions`]: ../error/enum.Error.html#variant.InvalidPermissions</span>
-    <span class="doccomment">/// [Manage Messages]: ../permissions/struct.Permissions.html#associatedconstant.MANAGE_MESSAGES</span>
-    <span class="doccomment">/// [permissions]: ../permissions/index.html</span>
+    <span class="doccomment">/// [Manage Messages]: Permissions::MANAGE_MESSAGES</span>
+    <span class="doccomment">/// [permissions]: super::permissions</span>
     <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cache_http</span>: <span class="kw">impl</span> <span class="ident">CacheHttp</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="comment">// Silences a warning when compiling without the `cache` feature.</span>
         <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_mut</span>)]</span>
@@ -727,9 +716,8 @@
     <span class="doccomment">/// [`ModelError::InvalidPermissions`] if the current user does not have</span>
     <span class="doccomment">/// the required [permissions].</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [`ModelError::InvalidPermissions`]: ../error/enum.Error.html#variant.InvalidPermissions</span>
-    <span class="doccomment">/// [Manage Messages]: ../permissions/struct.Permissions.html#associatedconstant.MANAGE_MESSAGES</span>
-    <span class="doccomment">/// [permissions]: ../permissions/index.html</span>
+    <span class="doccomment">/// [Manage Messages]: Permissions::MANAGE_MESSAGES</span>
+    <span class="doccomment">/// [permissions]: super::permissions</span>
     <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">delete_all</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cache_http</span>: <span class="kw">impl</span> <span class="ident">CacheHttp</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>)]</span>
         {
@@ -756,8 +744,7 @@
     <span class="doccomment">/// your own message cache or otherwise having the message available if</span>
     <span class="doccomment">/// possible.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [Read Message History]: ../permissions/struct.Permissions.html#associatedconstant.READ_MESSAGE_HISTORY</span>
-    <span class="doccomment">/// [`Message`]: struct.Message.html</span>
+    <span class="doccomment">/// [Read Message History]: Permissions::READ_MESSAGE_HISTORY</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">message</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">http</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Http</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">channel_id</span>.<span class="ident">message</span>(<span class="kw-2">&amp;</span><span class="ident">http</span>, <span class="self">self</span>.<span class="ident">message_id</span>).<span class="ident">await</span>
@@ -805,12 +792,8 @@
     <span class="doccomment">/// Returns a [`ModelError::InvalidPermissions`] if the current user does</span>
     <span class="doccomment">/// not have the required [permissions].</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [`ModelError::InvalidPermissions`]: ../error/enum.Error.html#variant.InvalidPermissions</span>
-    <span class="doccomment">/// [`Emoji`]: ../guild/struct.Emoji.html</span>
-    <span class="doccomment">/// [`Message`]: struct.Message.html</span>
-    <span class="doccomment">/// [`User`]: ../user/struct.User.html</span>
-    <span class="doccomment">/// [Read Message History]: ../permissions/struct.Permissions.html#associatedconstant.READ_MESSAGE_HISTORY</span>
-    <span class="doccomment">/// [permissions]: ../permissions/index.html</span>
+    <span class="doccomment">/// [Read Message History]: Permissions::READ_MESSAGE_HISTORY</span>
+    <span class="doccomment">/// [permissions]: super::permissions</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">users</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">U</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                        <span class="ident">http</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Http</span><span class="op">&gt;</span>,
@@ -847,22 +830,15 @@
 }
 
 <span class="doccomment">/// The type of a [`Reaction`] sent.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// [`Reaction`]: struct.Reaction.html</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Hash</span>)]</span>
 <span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ReactionType</span> {
     <span class="doccomment">/// A reaction with a [`Guild`]s custom [`Emoji`], which is unique to the</span>
     <span class="doccomment">/// guild.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Emoji`]: ../guild/struct.Emoji.html</span>
-    <span class="doccomment">/// [`Guild`]: ../guild/struct.Guild.html</span>
     <span class="ident">Custom</span> {
         <span class="doccomment">/// Whether the emoji is animated.</span>
         <span class="ident">animated</span>: <span class="ident">bool</span>,
         <span class="doccomment">/// The Id of the custom [`Emoji`].</span>
-        <span class="doccomment">///</span>
-        <span class="doccomment">/// [`Emoji`]: ../guild/struct.Emoji.html</span>
         <span class="ident">id</span>: <span class="ident">EmojiId</span>,
         <span class="doccomment">/// The name of the custom emoji. This is primarily used for decoration</span>
         <span class="doccomment">/// and distinguishing the emoji client-side.</span>
@@ -985,6 +961,34 @@
             } <span class="op">=</span><span class="op">&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}:{}&quot;</span>, <span class="ident">name</span>.<span class="ident">as_ref</span>().<span class="ident">map_or</span>(<span class="string">&quot;&quot;</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">as_str</span>()), <span class="ident">id</span>),
             <span class="ident">ReactionType</span>::<span class="ident">Unicode</span>(<span class="kw-2">ref</span> <span class="ident">unicode</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">unicode</span>.<span class="ident">clone</span>(),
         }
+    }
+
+    <span class="doccomment">/// Helper function to allow testing equality of unicode emojis without</span>
+    <span class="doccomment">/// having to perform any allocation.</span>
+    <span class="doccomment">/// Will always return false if the reaction was not a unicode reaction.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unicode_eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ReactionType</span>::<span class="ident">Unicode</span>(<span class="ident">unicode</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span> {
+            <span class="ident">unicode</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other</span>
+        } <span class="kw">else</span> {
+            <span class="comment">// Always return false if not a unicode reaction</span>
+            <span class="bool-val">false</span>
+        }
+
+    }
+
+    <span class="doccomment">/// Helper function to allow comparing unicode emojis without having</span>
+    <span class="doccomment">/// to perform any allocation.</span>
+    <span class="doccomment">/// Will return None if the reaction was not a unicode reaction.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unicode_partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> {
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ReactionType</span>::<span class="ident">Unicode</span>(<span class="ident">unicode</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">unicode</span>.<span class="ident">as_str</span>().<span class="ident">cmp</span>(<span class="ident">other</span>))
+        } <span class="kw">else</span> {
+            <span class="comment">// Always return None if not a unicode reaction</span>
+            <span class="prelude-val">None</span>
+        }
+
     }
 }
 
@@ -1185,10 +1189,6 @@
     <span class="doccomment">/// the documentation for [emoji&#39;s formatter][`Emoji::fmt`] on how this is</span>
     <span class="doccomment">/// displayed. Otherwise, if the type is a</span>
     <span class="doccomment">/// [unicode][`ReactionType::Unicode`], then the inner unicode is displayed.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Emoji::fmt`]: ../guild/struct.Emoji.html#method.fmt</span>
-    <span class="doccomment">/// [`ReactionType::Custom`]: enum.ReactionType.html#variant.Custom</span>
-    <span class="doccomment">/// [`ReactionType::Unicode`]: enum.ReactionType.html#variant.Unicode</span>
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">FmtResult</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">ReactionType</span>::<span class="ident">Custom</span> {

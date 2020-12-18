@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/model/error.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>error.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../serenity/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../serenity/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
                 <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -157,8 +157,6 @@
 <span id="154">154</span>
 <span id="155">155</span>
 <span id="156">156</span>
-<span id="157">157</span>
-<span id="158">158</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Error enum definition wrapping potential model implementation errors.</span>
 
@@ -221,10 +219,10 @@
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// [`Error`]: ../../enum.Error.html</span>
-<span class="doccomment">/// [`Error::Model`]: ../../enum.Error.html#variant.Model</span>
-<span class="doccomment">/// [`GuildId::ban`]: ../id/struct.GuildId.html#method.ban</span>
-<span class="doccomment">/// [`model`]: ../index.html</span>
+<span class="doccomment">/// [`Error`]: crate::Error</span>
+<span class="doccomment">/// [`Error::Model`]: crate::Error::Model</span>
+<span class="doccomment">/// [`GuildId::ban`]: super::id::GuildId::ban</span>
+<span class="doccomment">/// [`model`]: crate::model</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
@@ -236,20 +234,20 @@
     <span class="ident">DeleteMessageDaysAmount</span>(<span class="ident">u8</span>),
     <span class="doccomment">/// Indicates that the textual content of an embed exceeds the maximum</span>
     <span class="doccomment">/// length.</span>
-    <span class="ident">EmbedTooLarge</span>(<span class="ident">u64</span>),
+    <span class="ident">EmbedTooLarge</span>(<span class="ident">usize</span>),
     <span class="doccomment">/// An indication that a [guild][`Guild`] could not be found by</span>
     <span class="doccomment">/// [Id][`GuildId`] in the [`Cache`].</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Guild`]: ../guild/struct.Guild.html</span>
-    <span class="doccomment">/// [`GuildId`]: ../id/struct.GuildId.html</span>
-    <span class="doccomment">/// [`Cache`]: ../../cache/struct.Cache.html</span>
+    <span class="doccomment">/// [`Guild`]: super::guild::Guild</span>
+    <span class="doccomment">/// [`GuildId`]: super::id::GuildId</span>
+    <span class="doccomment">/// [`Cache`]: crate::cache::Cache</span>
     <span class="ident">GuildNotFound</span>,
     <span class="doccomment">/// An indication that a [role][`Role`] could not be found by</span>
     <span class="doccomment">/// [Id][`RoleId`] in the [`Cache`].</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Role`]: ../guild/struct.Role.html</span>
-    <span class="doccomment">/// [`RoleId`]: ../id/struct.RoleId.html</span>
-    <span class="doccomment">/// [`Cache`]: ../../cache/struct.Cache.html</span>
+    <span class="doccomment">/// [`Role`]: super::guild::Role</span>
+    <span class="doccomment">/// [`RoleId`]: super::id::RoleId</span>
+    <span class="doccomment">/// [`Cache`]: crate::cache::Cache</span>
     <span class="ident">RoleNotFound</span>,
     <span class="doccomment">/// Indicates that there are hierarchy problems restricting an action.</span>
     <span class="doccomment">///</span>
@@ -262,33 +260,31 @@
     <span class="doccomment">/// Indicates that you do not have the required permissions to perform an</span>
     <span class="doccomment">/// operation.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// The provided [`Permission`]s is the set of required permissions</span>
+    <span class="doccomment">/// The provided [`Permissions`] is the set of required permissions</span>
     <span class="doccomment">/// required.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Permission`]: ../permissions/struct.Permissions.html</span>
     <span class="ident">InvalidPermissions</span>(<span class="ident">Permissions</span>),
     <span class="doccomment">/// An indicator that the [current user] cannot perform an action.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [current user]: ../user/struct.CurrentUser.html</span>
+    <span class="doccomment">/// [current user]: super::user::CurrentUser</span>
     <span class="ident">InvalidUser</span>,
     <span class="doccomment">/// An indicator that an item is missing from the [`Cache`], and the action</span>
     <span class="doccomment">/// can not be continued.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Cache`]: ../../cache/struct.Cache.html</span>
+    <span class="doccomment">/// [`Cache`]: crate::cache::Cache</span>
     <span class="ident">ItemMissing</span>,
     <span class="doccomment">/// Indicates that a [`Message`]s content was too long and will not</span>
-    <span class="doccomment">/// successfully send, as the length is over 2000 codepoints, or 4000 bytes.</span>
+    <span class="doccomment">/// successfully send, as the length is over 2000 codepoints.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// The number of bytes larger than the limit is provided.</span>
+    <span class="doccomment">/// The number of code points larger than the limit is provided.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [`Message`]: ../channel/struct.Message.html</span>
-    <span class="ident">MessageTooLong</span>(<span class="ident">u64</span>),
+    <span class="doccomment">/// [`Message`]: super::channel::Message</span>
+    <span class="ident">MessageTooLong</span>(<span class="ident">usize</span>),
     <span class="doccomment">/// Indicates that the current user is attempting to Direct Message another</span>
     <span class="doccomment">/// bot user, which is disallowed by the API.</span>
     <span class="ident">MessagingBot</span>,
     <span class="doccomment">/// An indicator that the [`ChannelType`] cannot perform an action.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// [`ChannelType`]: ../channel/enum.ChannelType.html</span>
+    <span class="doccomment">/// [`ChannelType`]: super::channel::ChannelType</span>
     <span class="ident">InvalidChannelType</span>,
     <span class="doccomment">/// Indicates that the webhook name is under the 2 characters limit.</span>
     <span class="ident">NameTooShort</span>,
