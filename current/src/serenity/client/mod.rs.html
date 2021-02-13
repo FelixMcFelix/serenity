@@ -958,6 +958,23 @@
 <span id="955">955</span>
 <span id="956">956</span>
 <span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! The Client contains information about a single bot&#39;s token, as well</span>
 <span class="doccomment">//! as event handlers. Dispatching events to configured handlers and starting</span>
@@ -988,46 +1005,46 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gateway&quot;</span>)]</span>
 <span class="kw">mod</span> <span class="ident">extras</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::{
-    <span class="ident">context</span>::<span class="ident">Context</span>,
-    <span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">ClientError</span>,
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gateway&quot;</span>))]</span>
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">Duration</span>;
+<span class="kw">use</span> <span class="ident">std</span>::{
+    <span class="ident">boxed</span>::<span class="ident">Box</span>,
+    <span class="ident">future</span>::<span class="ident">Future</span>,
+    <span class="ident">pin</span>::<span class="ident">Pin</span>,
+    <span class="ident">sync</span>::<span class="ident">Arc</span>,
+    <span class="ident">task</span>::{<span class="ident">Context</span> <span class="kw">as</span> <span class="ident">FutContext</span>, <span class="ident">Poll</span>},
 };
 
+<span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>::<span class="ident">BoxFuture</span>;
+<span class="kw">use</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::{<span class="ident">Mutex</span>, <span class="ident">RwLock</span>};
+<span class="kw">use</span> <span class="ident">tracing</span>::{<span class="ident">debug</span>, <span class="ident">error</span>, <span class="ident">info</span>, <span class="ident">instrument</span>};
+<span class="kw">use</span> <span class="ident">typemap_rev</span>::{<span class="ident">TypeMap</span>, <span class="ident">TypeMapKey</span>};
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gateway&quot;</span>)]</span>
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">bridge</span>::<span class="ident">gateway</span>::{
+    <span class="ident">GatewayIntents</span>,
+    <span class="ident">ShardManager</span>,
+    <span class="ident">ShardManagerError</span>,
+    <span class="ident">ShardManagerMonitor</span>,
+    <span class="ident">ShardManagerOptions</span>,
+};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;voice&quot;</span>)]</span>
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">bridge</span>::<span class="ident">voice</span>::<span class="ident">VoiceGatewayManager</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::{<span class="ident">context</span>::<span class="ident">Context</span>, <span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">ClientError</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gateway&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::{
     <span class="ident">event_handler</span>::{<span class="ident">EventHandler</span>, <span class="ident">RawEventHandler</span>},
     <span class="ident">extras</span>::<span class="ident">Extras</span>,
 };
-
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">CacheAndHttp</span>;
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cache</span>::<span class="ident">Cache</span>;
-
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internal</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">tokio</span>::<span class="ident">sync</span>::{<span class="ident">Mutex</span>, <span class="ident">RwLock</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gateway&quot;</span>)]</span>
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">gateway</span>::<span class="ident">GatewayError</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gateway&quot;</span>)]</span>
-<span class="kw">use</span> <span class="self">self</span>::<span class="ident">bridge</span>::<span class="ident">gateway</span>::{<span class="ident">GatewayIntents</span>, <span class="ident">ShardManager</span>, <span class="ident">ShardManagerMonitor</span>, <span class="ident">ShardManagerOptions</span>, <span class="ident">ShardManagerError</span>};
-<span class="kw">use</span> <span class="ident">std</span>::{
-    <span class="ident">boxed</span>::<span class="ident">Box</span>,
-    <span class="ident">sync</span>::<span class="ident">Arc</span>,
-    <span class="ident">future</span>::<span class="ident">Future</span>,
-    <span class="ident">pin</span>::<span class="ident">Pin</span>,
-    <span class="ident">task</span>::{<span class="ident">Context</span> <span class="kw">as</span> <span class="ident">FutContext</span>, <span class="ident">Poll</span>},
-};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gateway&quot;</span>))]</span>
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">Duration</span>;
-<span class="kw">use</span> <span class="ident">tracing</span>::{<span class="ident">error</span>, <span class="ident">debug</span>, <span class="ident">info</span>, <span class="ident">instrument</span>};
-
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cache</span>::<span class="ident">Cache</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;framework&quot;</span>)]</span>
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">framework</span>::<span class="ident">Framework</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;voice&quot;</span>)]</span>
-<span class="kw">use</span> <span class="self">self</span>::<span class="ident">bridge</span>::<span class="ident">voice</span>::<span class="ident">VoiceGatewayManager</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">http</span>::<span class="ident">Http</span>;
-<span class="kw">use</span> <span class="ident">typemap_rev</span>::{<span class="ident">TypeMap</span>, <span class="ident">TypeMapKey</span>};
-<span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">future</span>::<span class="ident">BoxFuture</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internal</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">CacheAndHttp</span>;
 
 <span class="doccomment">/// A builder implementing [`Future`] building a [`Client`] to interact with Discord.</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gateway&quot;</span>)]</span>
@@ -1048,17 +1065,7 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;gateway&quot;</span>)]</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ClientBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Construct a new builder to call methods on for the client construction.</span>
-    <span class="doccomment">/// The `token` will automatically be prefixed &quot;Bot &quot; if not already.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// **Panic**:</span>
-    <span class="doccomment">/// If you enabled the `framework`-feature (on by default), you must specify</span>
-    <span class="doccomment">/// a framework via the [`framework`] or [`framework_arc`] method,</span>
-    <span class="doccomment">/// otherwise awaiting the builder will cause a panic.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [`framework`]: Self::framework</span>
-    <span class="doccomment">/// [`framework_arc`]: Self::framework_arc</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">token</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">_new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">data</span>: <span class="prelude-val">Some</span>(<span class="ident">TypeMap</span>::<span class="ident">new</span>()),
             <span class="ident">http</span>: <span class="prelude-val">None</span>,
@@ -1072,7 +1079,38 @@
             <span class="ident">voice_manager</span>: <span class="prelude-val">None</span>,
             <span class="ident">event_handler</span>: <span class="prelude-val">None</span>,
             <span class="ident">raw_event_handler</span>: <span class="prelude-val">None</span>,
-        }.<span class="ident">token</span>(<span class="ident">token</span>)
+        }
+    }
+
+    <span class="doccomment">/// Construct a new builder to call methods on for the client construction.</span>
+    <span class="doccomment">/// The `token` will automatically be prefixed &quot;Bot &quot; if not already.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Panic**:</span>
+    <span class="doccomment">/// If you have enabled the `framework`-feature (on by default), you must specify</span>
+    <span class="doccomment">/// a framework via the [`framework`] or [`framework_arc`] method,</span>
+    <span class="doccomment">/// otherwise awaiting the builder will cause a panic.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`framework`]: Self::framework</span>
+    <span class="doccomment">/// [`framework_arc`]: Self::framework_arc</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">token</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span>::<span class="ident">_new</span>().<span class="ident">token</span>(<span class="ident">token</span>)
+    }
+
+    <span class="doccomment">/// Construct a new builder with a [`Http`] instance to calls methods on</span>
+    <span class="doccomment">/// for the client construction.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Panic**:</span>
+    <span class="doccomment">/// If you have enabled the `framework`-feature (on by default), you must specify</span>
+    <span class="doccomment">/// a framework via the [`framework`] or [`framework_arc`] method,</span>
+    <span class="doccomment">/// otherwise awaiting the builder will cause a panic.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`Http`]: crate::http::Http</span>
+    <span class="doccomment">/// [`framework`]: Self::framework</span>
+    <span class="doccomment">/// [`framework_arc`]: Self::framework_arc</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_with_http</span>(<span class="ident">http</span>: <span class="ident">Http</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">c</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">_new</span>();
+        <span class="ident">c</span>.<span class="ident">http</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">http</span>);
+        <span class="ident">c</span>
     }
 
     <span class="doccomment">/// Sets a token for the bot. If the token is not prefixed &quot;Bot &quot;,</span>
@@ -1080,11 +1118,8 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">token</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">token</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">token</span>.<span class="ident">as_ref</span>().<span class="ident">trim</span>();
 
-        <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">token</span>.<span class="ident">starts_with</span>(<span class="string">&quot;Bot &quot;</span>) {
-            <span class="ident">token</span>.<span class="ident">to_string</span>()
-        } <span class="kw">else</span> {
-            <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Bot {}&quot;</span>, <span class="ident">token</span>)
-        };
+        <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span>
+            <span class="kw">if</span> <span class="ident">token</span>.<span class="ident">starts_with</span>(<span class="string">&quot;Bot &quot;</span>) { <span class="ident">token</span>.<span class="ident">to_string</span>() } <span class="kw">else</span> { <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Bot {}&quot;</span>, <span class="ident">token</span>) };
 
         <span class="self">self</span>.<span class="ident">http</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Http</span>::<span class="ident">new_with_token</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>));
 
@@ -1144,7 +1179,8 @@
     <span class="doccomment">/// [`framework_arc`]: Self::framework_arc</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;framework&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">framework</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">framework</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>
-    <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">Framework</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="kw">where</span>
+        <span class="ident">F</span>: <span class="ident">Framework</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
         <span class="self">self</span>.<span class="ident">framework</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">framework</span>)));
 
@@ -1158,7 +1194,10 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`framework`]: Self::framework</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;framework&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">framework_arc</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">framework</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Framework</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">framework_arc</span>(
+        <span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">framework</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Framework</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">framework</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">framework</span>);
 
         <span class="self">self</span>
@@ -1175,7 +1214,8 @@
     <span class="doccomment">/// [`voice_manager_arc`]: Self::voice_manager_arc</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;voice&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">voice_manager</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">voice_manager</span>: <span class="ident">V</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>
-    <span class="kw">where</span> <span class="ident">V</span>: <span class="ident">VoiceGatewayManager</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    <span class="kw">where</span>
+        <span class="ident">V</span>: <span class="ident">VoiceGatewayManager</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
         <span class="self">self</span>.<span class="ident">voice_manager</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">voice_manager</span>));
 
@@ -1189,7 +1229,10 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`voice_manager`]: #method.voice_manager</span>
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;voice&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">voice_manager_arc</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">voice_manager</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">VoiceGatewayManager</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">voice_manager_arc</span>(
+        <span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">voice_manager</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">VoiceGatewayManager</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">voice_manager</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">voice_manager</span>);
 
         <span class="self">self</span>
@@ -1228,6 +1271,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Future</span> <span class="kw">for</span> <span class="ident">ClientBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Client</span><span class="op">&gt;</span>;
 
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">unwrap_used</span>)]</span> <span class="comment">// Allowing unwrap because all should be Some() by this point</span>
     <span class="attribute">#[<span class="ident">instrument</span>(<span class="ident">skip</span>(<span class="self">self</span>))]</span>
     <span class="kw">fn</span> <span class="ident">poll</span>(<span class="kw-2">mut</span> <span class="self">self</span>: <span class="ident">Pin</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span><span class="op">&gt;</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FutContext</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Poll</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Output</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">fut</span>.<span class="ident">is_none</span>() {
@@ -1269,7 +1313,8 @@
                         <span class="ident">ws_url</span>: <span class="kw-2">&amp;</span><span class="ident">url</span>,
                         <span class="ident">cache_and_http</span>: <span class="kw-2">&amp;</span><span class="ident">cache_and_http</span>,
                         <span class="ident">intents</span>,
-                    }).<span class="kw">await</span>
+                    })
+                    .<span class="kw">await</span>
                 };
 
                 <span class="prelude-val">Ok</span>(<span class="ident">Client</span> {
@@ -1308,8 +1353,8 @@
 <span class="doccomment">/// receive, acting as a &quot;ping-pong&quot; bot is simple:</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// use serenity::prelude::*;</span>
 <span class="doccomment">/// use serenity::model::prelude::*;</span>
+<span class="doccomment">/// use serenity::prelude::*;</span>
 <span class="doccomment">/// use serenity::Client;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// struct Handler;</span>
@@ -1420,7 +1465,7 @@
     <span class="doccomment">/// [`Event::MessageDelete`]: crate::model::event::Event::MessageDelete</span>
     <span class="doccomment">/// [`Event::MessageDeleteBulk`]: crate::model::event::Event::MessageDeleteBulk</span>
     <span class="doccomment">/// [`Event::MessageUpdate`]: crate::model::event::Event::MessageUpdate</span>
-    <span class="doccomment">/// [example 05]: https://github.com/serenity-rs/serenity/tree/current/examples/05_command_framework</span>
+    <span class="doccomment">/// [example 05]: https://github.com/serenity-rs/serenity/tree/current/examples/e05_command_framework</span>
     <span class="kw">pub</span> <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">TypeMap</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="doccomment">/// A HashMap of all shards instantiated by the Client.</span>
     <span class="doccomment">///</span>
@@ -1459,7 +1504,7 @@
     <span class="doccomment">///         let count = sm.shards_instantiated().await.len();</span>
     <span class="doccomment">///         println!(&quot;Shard count instantiated: {}&quot;, count);</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">///         tokio::time::delay_for(Duration::from_millis(5000)).await;</span>
+    <span class="doccomment">///         tokio::time::sleep(Duration::from_millis(5000)).await;</span>
     <span class="doccomment">///     }</span>
     <span class="doccomment">/// });</span>
     <span class="doccomment">/// #     Ok(())</span>
@@ -1486,7 +1531,7 @@
     <span class="doccomment">/// // Create a thread which will sleep for 60 seconds and then have the</span>
     <span class="doccomment">/// // shard manager shutdown.</span>
     <span class="doccomment">/// tokio::spawn(async move {</span>
-    <span class="doccomment">///     tokio::time::delay_for(Duration::from_secs(60));</span>
+    <span class="doccomment">///     tokio::time::sleep(Duration::from_secs(60));</span>
     <span class="doccomment">///</span>
     <span class="doccomment">///     shard_manager.lock().await.shutdown_all().await;</span>
     <span class="doccomment">///</span>
@@ -1519,14 +1564,6 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Client</span> {
-    <span class="doccomment">/// Returns a builder implementing [`Future`]. You can chain the builder methods and then await</span>
-    <span class="doccomment">/// in order to finish the [`Client`].</span>
-    <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span><span class="op">=</span><span class="string">&quot;0.9.0&quot;</span>, <span class="ident">note</span><span class="op">=</span><span class="string">&quot;please use `builder` instead&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy</span>::<span class="ident">new_ret_no_self</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">token</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-        <span class="self">Self</span>::<span class="ident">builder</span>(<span class="ident">token</span>)
-    }
-
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">token</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ClientBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
         <span class="ident">ClientBuilder</span>::<span class="ident">new</span>(<span class="ident">token</span>)
     }
@@ -1824,12 +1861,7 @@
 
             <span class="ident">manager</span>.<span class="ident">set_shards</span>(<span class="ident">shard_data</span>[<span class="number">0</span>], <span class="ident">init</span>, <span class="ident">shard_data</span>[<span class="number">2</span>]).<span class="kw">await</span>;
 
-            <span class="macro">debug</span><span class="macro">!</span>(
-                <span class="string">&quot;Initializing shard info: {} - {}/{}&quot;</span>,
-                <span class="ident">shard_data</span>[<span class="number">0</span>],
-                <span class="ident">init</span>,
-                <span class="ident">shard_data</span>[<span class="number">2</span>],
-            );
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Initializing shard info: {} - {}/{}&quot;</span>, <span class="ident">shard_data</span>[<span class="number">0</span>], <span class="ident">init</span>, <span class="ident">shard_data</span>[<span class="number">2</span>],);
 
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">why</span>) <span class="op">=</span> <span class="ident">manager</span>.<span class="ident">initialize</span>() {
                 <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Failed to boot a shard: {:?}&quot;</span>, <span class="ident">why</span>);
@@ -1842,8 +1874,10 @@
         }
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">why</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">shard_manager_worker</span>.<span class="ident">run</span>().<span class="kw">await</span> {
-            <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span>  <span class="kw">match</span> <span class="ident">why</span> {
-                <span class="ident">ShardManagerError</span>::<span class="ident">DisallowedGatewayIntents</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">GatewayError</span>::<span class="ident">DisallowedGatewayIntents</span>,
+            <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">why</span> {
+                <span class="ident">ShardManagerError</span>::<span class="ident">DisallowedGatewayIntents</span> <span class="op">=</span><span class="op">&gt;</span> {
+                    <span class="ident">GatewayError</span>::<span class="ident">DisallowedGatewayIntents</span>
+                },
                 <span class="ident">ShardManagerError</span>::<span class="ident">InvalidGatewayIntents</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">GatewayError</span>::<span class="ident">InvalidGatewayIntents</span>,
                 <span class="ident">ShardManagerError</span>::<span class="ident">InvalidToken</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">GatewayError</span>::<span class="ident">InvalidAuthentication</span>,
             };
@@ -1917,4 +1951,5 @@
     <span class="prelude-val">Ok</span>(())
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "serenity";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="serenity"></div>
+    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

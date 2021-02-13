@@ -226,27 +226,32 @@
 <span id="223">223</span>
 <span id="224">224</span>
 <span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">model</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;utils&quot;</span>))]</span>
+<span class="kw">use</span> <span class="ident">async_trait</span>::<span class="ident">async_trait</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>)]</span>
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">builder</span>::<span class="ident">EditRole</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>))]</span>
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internal</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>))]</span>
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cache</span>::<span class="ident">Cache</span>;
-
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;utils&quot;</span>))]</span>
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">cache</span>::<span class="ident">FromStrAndCache</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;utils&quot;</span>))]</span>
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">model</span>::<span class="ident">misc</span>::<span class="ident">RoleParseError</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;utils&quot;</span>))]</span>
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">parse_role</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>)]</span>
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">http</span>::<span class="ident">Http</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>))]</span>
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internal</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;utils&quot;</span>))]</span>
-<span class="kw">use</span> <span class="ident">async_trait</span>::<span class="ident">async_trait</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">model</span>::<span class="ident">misc</span>::<span class="ident">RoleParseError</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">model</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;utils&quot;</span>))]</span>
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">parse_role</span>;
 
 <span class="doccomment">/// Information about a role within a guild. A role represents a set of</span>
 <span class="doccomment">/// permissions, and can be attached to one or multiple users. A role has</span>
@@ -307,6 +312,11 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// **Note** Requires the [Manage Roles] permission.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// # Errors</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns [`Error::Http`] if the curent user lacks permission to</span>
+    <span class="doccomment">/// delete this role.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// [Manage Roles]: Permissions::MANAGE_ROLES</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">delete</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">http</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Http</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
@@ -332,29 +342,20 @@
     <span class="doccomment">///     r</span>
     <span class="doccomment">/// });</span>
     <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// </span>
+    <span class="doccomment">/// # Errors</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns [`Error::Http`] if the current user does not</span>
+    <span class="doccomment">/// have permission to Manage Roles.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [Manage Roles]: Permissions::MANAGE_ROLES</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">edit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">http</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Http</span><span class="op">&gt;</span>, <span class="ident">f</span>: <span class="kw">impl</span> <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EditRole</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EditRole</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Role</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">edit</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">http</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Http</span><span class="op">&gt;</span>,
+        <span class="ident">f</span>: <span class="kw">impl</span> <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EditRole</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">EditRole</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Role</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">guild_id</span>.<span class="ident">edit_role</span>(<span class="ident">http</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="ident">f</span>).<span class="kw">await</span>
-    }
-
-    <span class="doccomment">/// Searches the cache for the guild that owns the role.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Errors</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Returns a [`ModelError::GuildNotFound`] if a guild is not in the cache</span>
-    <span class="doccomment">/// that contains the role.</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;replaced with the `guild_id` field&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.9.0&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">find_guild</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cache</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Cache</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">GuildId</span><span class="op">&gt;</span> {
-        <span class="kw">for</span> <span class="ident">guild</span> <span class="kw">in</span> <span class="ident">cache</span>.<span class="ident">as_ref</span>().<span class="ident">guilds</span>.<span class="ident">read</span>().<span class="kw">await</span>.<span class="ident">values</span>() {
-            <span class="kw">if</span> <span class="ident">guild</span>.<span class="ident">roles</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">RoleId</span>(<span class="self">self</span>.<span class="ident">id</span>.<span class="number">0</span>)) {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">guild</span>.<span class="ident">id</span>);
-            }
-        }
-
-        <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">Model</span>(<span class="ident">ModelError</span>::<span class="ident">GuildNotFound</span>))
     }
 
     <span class="doccomment">/// Check that the role has the given permission.</span>
@@ -399,11 +400,15 @@
 }
 
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Role</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Role</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> { <span class="self">self</span>.<span class="ident">id</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">id</span> }
+    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Role</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">id</span> <span class="op">=</span><span class="op">=</span> <span class="ident">other</span>.<span class="ident">id</span>
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Role</span> {
-    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Role</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> { <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">cmp</span>(<span class="ident">other</span>)) }
+    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Role</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">cmp</span>(<span class="ident">other</span>))
+    }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>)]</span>
@@ -427,12 +432,16 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Role</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RoleId</span> {
     <span class="doccomment">/// Gets the Id of a role.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">role</span>: <span class="ident">Role</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RoleId</span> { <span class="ident">role</span>.<span class="ident">id</span> }
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">role</span>: <span class="ident">Role</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RoleId</span> {
+        <span class="ident">role</span>.<span class="ident">id</span>
+    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Role</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RoleId</span> {
     <span class="doccomment">/// Gets the Id of a role.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">role</span>: <span class="kw-2">&amp;</span><span class="ident">Role</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RoleId</span> { <span class="ident">role</span>.<span class="ident">id</span> }
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">role</span>: <span class="kw-2">&amp;</span><span class="ident">Role</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RoleId</span> {
+        <span class="ident">role</span>.<span class="ident">id</span>
+    }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;cache&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;model&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;utils&quot;</span>))]</span>
@@ -441,7 +450,8 @@
     <span class="kw">type</span> <span class="prelude-val">Err</span> <span class="op">=</span> <span class="ident">RoleParseError</span>;
 
     <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">from_str</span><span class="op">&lt;</span><span class="ident">CRL</span><span class="op">&gt;</span>(<span class="ident">cache</span>: <span class="ident">CRL</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">StdResult</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="self">Self</span>::<span class="prelude-val">Err</span><span class="op">&gt;</span>
-    <span class="kw">where</span> <span class="ident">CRL</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Cache</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span>
+    <span class="kw">where</span>
+        <span class="ident">CRL</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Cache</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span>,
     {
         <span class="kw">match</span> <span class="ident">parse_role</span>(<span class="ident">s</span>) {
             <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">match</span> <span class="ident">RoleId</span>(<span class="ident">x</span>).<span class="ident">to_role_cached</span>(<span class="kw-2">&amp;</span><span class="ident">cache</span>).<span class="kw">await</span> {
@@ -453,4 +463,5 @@
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../../";window.currentCrate = "serenity";</script><script src="../../../../main.js"></script><script src="../../../../source-script.js"></script><script src="../../../../source-files.js"></script><script defer src="../../../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="serenity"></div>
+    <script src="../../../../main.js"></script><script src="../../../../source-script.js"></script><script src="../../../../source-files.js"></script><script defer src="../../../../search-index.js"></script></body></html>

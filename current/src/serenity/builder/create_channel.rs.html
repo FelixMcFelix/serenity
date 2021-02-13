@@ -165,13 +165,17 @@
 <span id="162">162</span>
 <span id="163">163</span>
 <span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internal</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">model</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 
 <span class="kw">use</span> <span class="ident">serde_json</span>::{<span class="ident">json</span>, <span class="ident">Value</span>};
 
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">internal</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">model</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// A builder for creating a new [`GuildChannel`] in a [`Guild`].</span>
 <span class="doccomment">///</span>
@@ -273,12 +277,12 @@
     <span class="doccomment">/// use serenity::model::id::UserId;</span>
     <span class="doccomment">/// use serenity::model::permissions::Permissions;</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// // Assuming a guild have already been bound.</span>
-    <span class="doccomment">/// let permissions = Some(PermissionOverwrite {</span>
+    <span class="doccomment">/// // Assuming a guild has already been bound.</span>
+    <span class="doccomment">/// let permissions = vec![PermissionOverwrite {</span>
     <span class="doccomment">///     allow: Permissions::READ_MESSAGES,</span>
     <span class="doccomment">///     deny: Permissions::SEND_TTS_MESSAGES,</span>
     <span class="doccomment">///     kind: PermissionOverwriteType::Member(UserId(1234)),</span>
-    <span class="doccomment">/// });</span>
+    <span class="doccomment">/// }];</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// guild.create_channel(http, |c| {</span>
     <span class="doccomment">///     c.name(&quot;my_new_cool_channel&quot;)</span>
@@ -289,21 +293,25 @@
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">permissions</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">perms</span>: <span class="ident">I</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>
-        <span class="kw">where</span> <span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span><span class="ident">PermissionOverwrite</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">PermissionOverwrite</span><span class="op">&gt;</span>,
     {
-        <span class="kw">let</span> <span class="ident">overwrites</span> <span class="op">=</span> <span class="ident">perms</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">perm</span><span class="op">|</span> {
-            <span class="kw">let</span> (<span class="ident">id</span>, <span class="ident">kind</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">perm</span>.<span class="ident">kind</span> {
-                <span class="ident">PermissionOverwriteType</span>::<span class="ident">Member</span>(<span class="ident">id</span>) <span class="op">=</span><span class="op">&gt;</span> (<span class="ident">id</span>.<span class="number">0</span>, <span class="string">&quot;member&quot;</span>),
-                <span class="ident">PermissionOverwriteType</span>::<span class="ident">Role</span>(<span class="ident">id</span>) <span class="op">=</span><span class="op">&gt;</span> (<span class="ident">id</span>.<span class="number">0</span>, <span class="string">&quot;role&quot;</span>),
-            };
+        <span class="kw">let</span> <span class="ident">overwrites</span> <span class="op">=</span> <span class="ident">perms</span>
+            .<span class="ident">into_iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">perm</span><span class="op">|</span> {
+                <span class="kw">let</span> (<span class="ident">id</span>, <span class="ident">kind</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">perm</span>.<span class="ident">kind</span> {
+                    <span class="ident">PermissionOverwriteType</span>::<span class="ident">Member</span>(<span class="ident">id</span>) <span class="op">=</span><span class="op">&gt;</span> (<span class="ident">id</span>.<span class="number">0</span>, <span class="string">&quot;member&quot;</span>),
+                    <span class="ident">PermissionOverwriteType</span>::<span class="ident">Role</span>(<span class="ident">id</span>) <span class="op">=</span><span class="op">&gt;</span> (<span class="ident">id</span>.<span class="number">0</span>, <span class="string">&quot;role&quot;</span>),
+                };
 
-            <span class="macro">json</span><span class="macro">!</span>({
-                <span class="string">&quot;allow&quot;</span>: <span class="ident">perm</span>.<span class="ident">allow</span>.<span class="ident">bits</span>(),
-                <span class="string">&quot;deny&quot;</span>: <span class="ident">perm</span>.<span class="ident">deny</span>.<span class="ident">bits</span>(),
-                <span class="string">&quot;id&quot;</span>: <span class="ident">id</span>,
-                <span class="string">&quot;type&quot;</span>: <span class="ident">kind</span>,
+                <span class="macro">json</span><span class="macro">!</span>({
+                    <span class="string">&quot;allow&quot;</span>: <span class="ident">perm</span>.<span class="ident">allow</span>.<span class="ident">bits</span>(),
+                    <span class="string">&quot;deny&quot;</span>: <span class="ident">perm</span>.<span class="ident">deny</span>.<span class="ident">bits</span>(),
+                    <span class="string">&quot;id&quot;</span>: <span class="ident">id</span>,
+                    <span class="string">&quot;type&quot;</span>: <span class="ident">kind</span>,
+                })
             })
-        }).<span class="ident">collect</span>();
+            .<span class="ident">collect</span>();
 
         <span class="self">self</span>.<span class="number">0</span>.<span class="ident">insert</span>(<span class="string">&quot;permission_overwrites&quot;</span>, <span class="ident">Value</span>::<span class="ident">Array</span>(<span class="ident">overwrites</span>));
 
@@ -331,4 +339,5 @@
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "serenity";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="serenity"></div>
+    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
