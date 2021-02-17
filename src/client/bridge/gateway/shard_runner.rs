@@ -48,6 +48,8 @@ pub struct ShardRunner {
     message_filters: Vec<MessageFilter>,
     #[cfg(feature = "collector")]
     reaction_filters: Vec<ReactionFilter>,
+
+    should_force_resume: bool,
 }
 
 impl ShardRunner {
@@ -72,6 +74,8 @@ impl ShardRunner {
             message_filters: Vec::new(),
             #[cfg(feature = "collector")]
             reaction_filters: Vec::new(),
+
+            should_force_resume: false,
         }
     }
 
@@ -137,9 +141,20 @@ impl ShardRunner {
                 },
                 Some(other) => {
                     #[allow(clippy::let_underscore_must_use)]
-                    let _ = self.action(&other).await;
+                    if let Err(e) = self.action(&other).await {
+                        error!("[ShardRunner {:?}] Action failure: {:?}", self.shard.shard_info(), e);
+                    }
                 },
                 None => {},
+            }
+
+            if self.should_force_resume {
+                self.should_force_resume = false;
+
+                #[allow(clippy::let_underscore_must_use)]
+                if let Err(e) = self.action(&ShardAction::Reconnect(ReconnectType::Resume)).await {
+                    error!("[ShardRunner {:?}] Action failure: {:?}", self.shard.shard_info(), e);
+                }
             }
 
             if let Some(event) = event {
@@ -411,6 +426,11 @@ impl ShardRunner {
                 #[cfg(feature = "collector")]
                 ShardClientMessage::Runner(ShardRunnerMessage::SetReactionFilter(collector)) => {
                     self.reaction_filters.push(collector);
+
+                    true
+                },
+                ShardClientMessage::Runner(ShardRunnerMessage::KindlyRequestResume) => {
+                    self.should_force_resume = true;
 
                     true
                 },

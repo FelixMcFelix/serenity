@@ -65,4 +65,6 @@ pub enum ShardRunnerMessage {
     /// Sends a new filter for reactions to the shard.
     #[cfg(feature = "collector")]
     SetReactionFilter(ReactionFilter),
+    ///Blah
+    KindlyRequestResume,
 }

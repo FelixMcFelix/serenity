@@ -247,6 +247,15 @@ impl ShardMessenger {
         self.tx.unbounded_send(InterMessage::Client(Box::new(ShardClientMessage::Runner(msg))))
     }
 
+    /// Sends a message to the shard.
+    /// # Errors
+    ///
+    /// Returns a `TrySendError` if the shard's receiver was closed.
+    #[inline]
+    pub fn temp_shard_restart(&self) -> Result<(), TrySendError<InterMessage>> {
+        self.tx.unbounded_send(InterMessage::Client(Box::new(ShardClientMessage::Runner(crate::client::bridge::gateway::ShardRunnerMessage::KindlyRequestResume))))
+    }
+
     /// Sets a new filter for a message collector.
     #[inline]
     #[cfg(feature = "collector")]
