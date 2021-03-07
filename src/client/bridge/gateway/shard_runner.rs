@@ -120,7 +120,7 @@ impl ShardRunner {
             }
 
             let pre = self.shard.stage();
-            let (event, action, successful) = self.recv_event().await?;
+            let (event, action, mut successful) = self.recv_event().await?;
             let post = self.shard.stage();
 
             if post != pre {
@@ -140,21 +140,62 @@ impl ShardRunner {
                     return self.request_restart().await;
                 },
                 Some(other) => {
-                    #[allow(clippy::let_underscore_must_use)]
+                    // #[allow(clippy::let_underscore_must_use)]
+                    // if let Err(e) = self.action(&other).await {
+                    //     error!("[ShardRunner {:?}] Action failure: {:?}", self.shard.shard_info(), e);
+                    // }
                     if let Err(e) = self.action(&other).await {
-                        error!("[ShardRunner {:?}] Action failure: {:?}", self.shard.shard_info(), e);
+                        debug!(
+                            "[ShardRunner {:?}] Reconnecting due to error performing X: {:?}",
+                            self.shard.shard_info(),
+                            e
+                        );
+                        successful &= match self.shard.reconnection_type() {
+                            ReconnectType::Reidentify => false,
+                            ReconnectType::Resume => {
+                                if let Err(why) = self.shard.resume().await {
+                                    warn!(
+                                        "[ShardRunner {:?}] Resume failed, reidentifying: {:?}",
+                                        self.shard.shard_info(),
+                                        why
+                                    );
+
+                                    false
+                                } else {
+                                    true
+                                }
+                            },
+                        };
                     }
                 },
                 None => {},
             }
 
             if self.should_force_resume {
-                self.should_force_resume = false;
-
-                #[allow(clippy::let_underscore_must_use)]
                 if let Err(e) = self.action(&ShardAction::Reconnect(ReconnectType::Resume)).await {
-                    error!("[ShardRunner {:?}] Action failure: {:?}", self.shard.shard_info(), e);
+                    debug!(
+                        "[ShardRunner {:?}] Reconnecting due to error performing X: {:?}",
+                        self.shard.shard_info(),
+                        e
+                    );
+                    successful &= match self.shard.reconnection_type() {
+                        ReconnectType::Reidentify => false,
+                        ReconnectType::Resume => {
+                            if true {
+                                warn!(
+                                    "[ShardRunner {:?}] Resume failed, reidentifying: {:?}",
+                                    self.shard.shard_info(),
+                                    why
+                                );
+
+                                false
+                            } else {
+                                true
+                            }
+                        },
+                    };
                 }
+                self.should_force_resume = false;
             }
 
             if let Some(event) = event {
